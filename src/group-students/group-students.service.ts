@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Group_students } from './models/group-student.model';
 import { CreateGroupStudentDto } from './dto/create-group-student.dto';
 import { UpdateGroupStudentDto } from './dto/update-group-student.dto';
 
 @Injectable()
 export class GroupStudentsService {
-  create(createGroupStudentDto: CreateGroupStudentDto) {
-    return 'This action adds a new groupStudent';
+  constructor(
+    @InjectModel(Group_students)
+    private groupStudentModel: typeof Group_students,
+  ) { }
+
+  async create(createGroupStudentDto: CreateGroupStudentDto): Promise<Group_students> {
+    return this.groupStudentModel.create(createGroupStudentDto);
   }
 
-  findAll() {
-    return `This action returns all groupStudents`;
+  async findAll(): Promise<Group_students[]> {
+    return this.groupStudentModel.findAll({
+      include: ['group', 'student'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} groupStudent`;
+  async findOne(id: number): Promise<Group_students> {
+    const groupStudent = await this.groupStudentModel.findByPk(id, {
+      include: ['group', 'student'],
+    });
+    if (!groupStudent) {
+      throw new Error('Group-Student relation not found');
+    }
+    return groupStudent;
   }
 
-  update(id: number, updateGroupStudentDto: UpdateGroupStudentDto) {
-    return `This action updates a #${id} groupStudent`;
+  async update(id: number, updateGroupStudentDto: UpdateGroupStudentDto): Promise<Group_students> {
+    const groupStudent = await this.findOne(id);
+    return groupStudent.update(updateGroupStudentDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} groupStudent`;
+  async remove(id: number): Promise<void> {
+    const groupStudent = await this.findOne(id);
+    await groupStudent.destroy();
   }
 }
