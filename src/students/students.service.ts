@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Students } from './models/student.model';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentsService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectModel(Students)
+    private studentModel: typeof Students,
+  ) { }
+
+  async create(createStudentDto: CreateStudentDto): Promise<Students> {
+    return this.studentModel.create(createStudentDto);
   }
 
-  findAll() {
-    return `This action returns all students`;
+  async findAll(): Promise<Students[]> {
+    return this.studentModel.findAll({
+      include: ['projects', 'group_students'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async findOne(id: number): Promise<Students> {
+    return this.studentModel.findByPk(id, {
+      include: ['projects', 'group_students'],
+    });
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: number, updateStudentDto: UpdateStudentDto): Promise<Students> {
+    const student = await this.findOne(id);
+    if (!student) {
+      throw new Error('Student not found');
+    }
+    return student.update(updateStudentDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async remove(id: number): Promise<void> {
+    const student = await this.findOne(id);
+    if (!student) {
+      throw new Error('Student not found');
+    }
+    await student.destroy();
   }
 }

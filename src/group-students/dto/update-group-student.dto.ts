@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateGroupStudentDto } from './create-group-student.dto';
+import { IsInt, IsNotEmpty } from "class-validator";
 
-export class UpdateGroupStudentDto extends PartialType(CreateGroupStudentDto) {}
+export class UpdateGroupStudentDto {
+    @IsInt()
+    @IsNotEmpty()
+    group_id: number;
+
+    @IsInt()
+    @IsNotEmpty()
+    student_id: number;
+}
