@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVideosOfTeacherDto } from './dto/create-videos-of-teacher.dto';
 import { UpdateVideosOfTeacherDto } from './dto/update-videos-of-teacher.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Videos_of_teachers } from './models/videos-of-teacher.model';
+import { handleError } from 'src/utils/responseError';
 
 @Injectable()
 export class VideosOfTeachersService {
-  create(createVideosOfTeacherDto: CreateVideosOfTeacherDto) {
-    return 'This action adds a new videosOfTeacher';
+  constructor(@InjectModel(Videos_of_teachers) private model: typeof Videos_of_teachers) { }
+
+  async create(createVideosOfTeacherDto: CreateVideosOfTeacherDto) {
+    try {
+      const videos_of_teachers = await this.model.create({ ...createVideosOfTeacherDto })
+      return { statusCode: 201, message: "Success", data: videos_of_teachers }
+    } catch (error) {
+      handleError(error)
+    }
   }
 
-  findAll() {
-    return `This action returns all videosOfTeachers`;
+  async findAll() {
+    try {
+      const videos_of_teachers = await this.model.findAll({ include: { all: true } })
+      return { statusCode: 200, message: "Success", data: videos_of_teachers }
+    } catch (error) {
+      handleError(error)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} videosOfTeacher`;
+  async findOne(id: number) {
+    try {
+      const videos_of_teachers = await this.model.findByPk(id, { include: { all: true } })
+      if (!videos_of_teachers) {
+        throw new NotFoundException()
+      }
+      return { statusCode: 200, message: "Success", data: videos_of_teachers }
+    } catch (error) {
+      handleError(error)
+    }
   }
 
-  update(id: number, updateVideosOfTeacherDto: UpdateVideosOfTeacherDto) {
-    return `This action updates a #${id} videosOfTeacher`;
+  async update(id: number, updateVideosOfTeacherDto: UpdateVideosOfTeacherDto) {
+    try {
+      if (!await this.model.findByPk(id)) {
+        throw new NotFoundException()
+      }
+      const videos_of_teachers = await this.model.update(updateVideosOfTeacherDto, { where: { id }, returning: true })
+      return { statusCode: 200, message: "Success", data: videos_of_teachers }
+    } catch (error) {
+      handleError(error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} videosOfTeacher`;
+  async remove(id: number) {
+    try {
+      if (!await this.model.findByPk(id)) {
+        throw new NotFoundException()
+      }
+      const videos_of_teachers = await this.model.destroy({ where: { id } })
+      return { statusCode: 200, message: "Success", data: {} }
+    } catch (error) {
+      handleError(error)
+    }
   }
 }
