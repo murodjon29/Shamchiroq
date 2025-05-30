@@ -1,26 +1,75 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Books } from './models/book.model';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { handleError } from 'src/utils/responseError';
+import { Teachers } from 'src/teachers/models/teacher.model';
 
 @Injectable()
 export class BooksService {
-  create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+  constructor(@InjectModel(Books) private model: typeof Books) {}
+
+  async create(createBookDto: CreateBookDto) {
+    try {
+      const book = await this.model.create({ ...createBookDto });
+      return { statusCode: 201, message: 'Success', data: book };
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all books`;
+  async findAll() {
+    try {
+      const books = await this.model.findAll({ include: { all: true } });
+      return { statusCode: 200, message: 'Success', data: books };
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(id: number) {
+    try {
+      const book = await this.model.findByPk(id, {
+        include: { all: true },
+      });
+      if (!book) {
+        throw new NotFoundException('Book not found');
+      }
+      return { statusCode: 200, message: 'Success', data: book };
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(id: number, updateBookDto: UpdateBookDto) {
+    try {
+      const found = await this.model.findByPk(id);
+      if (!found) {
+        throw new NotFoundException('Book not found');
+      }
+
+      const book = await this.model.update(updateBookDto, {
+        where: { id },
+        returning: true,
+      });
+      return { statusCode: 200, message: 'Success', data: book[1][0] };
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(id: number) {
+    try {
+      const found = await this.model.findByPk(id);
+      if (!found) {
+        throw new NotFoundException('Book not found');
+      }
+
+      await this.model.destroy({ where: { id } });
+      return { statusCode: 200, message: 'Success', data: {} };
+    } catch (error) {
+      return handleError(error);
+    }
   }
 }
