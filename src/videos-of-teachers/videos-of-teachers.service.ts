@@ -3,15 +3,20 @@ import { CreateVideosOfTeacherDto } from './dto/create-videos-of-teacher.dto';
 import { UpdateVideosOfTeacherDto } from './dto/update-videos-of-teacher.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Videos_of_teachers } from './models/videos-of-teacher.model';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class VideosOfTeachersService {
-  constructor(@InjectModel(Videos_of_teachers) private model: typeof Videos_of_teachers) { }
+  constructor(@InjectModel(Videos_of_teachers) private model: typeof Videos_of_teachers, private readonly fileService: FileService) { }
 
-  async create(createVideosOfTeacherDto: CreateVideosOfTeacherDto) {
+  async create(createVideosOfTeacherDto: CreateVideosOfTeacherDto, file?: Express.Multer.File) {
     try {
-      const videos_of_teachers = await this.model.create({ ...createVideosOfTeacherDto })
+      let video: undefined | string
+      if(file){
+        video = await  this.fileService.createFile(file)
+      }
+      const videos_of_teachers = await this.model.create({ ...createVideosOfTeacherDto, video_url: video })
       return { statusCode: 201, message: "Success", data: videos_of_teachers }
     } catch (error) {
       handleError(error)

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Projects } from './models/project.model';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class ProjectsService {

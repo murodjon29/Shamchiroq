@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import {Lessons} from './models/lesson.model'
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class LessonService {

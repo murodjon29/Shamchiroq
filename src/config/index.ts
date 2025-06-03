@@ -11,6 +11,7 @@ export default {
   PG_DB: String(process.env.PG_DB),
   SUPERADMIN_EMAIL:String(process.env.SUPERADMIN_EMAIL),
   SUPERADMIN_PASSWORD:String(process.env.SUPERADMIN_PASSWORD),
+  BASE_URL: String(process.env.BASE_URL),
   MAIL_HOST: String(process.env.MAIL_HOST),
   MAIL_PORT: Number(process.env.MAIL_PORT),
   MAIL_USER: String(process.env.MAIL_USER),
@@ -19,4 +20,5 @@ export default {
   ACCESS_TOKEN_TIME: String(process.env.ACCESS_TOKEN_TIME),
   REFRESH_TOKEN_KEY: String(process.env.REFRESH_TOKEN_KEY),
   REFRESH_TOKEN_TIME: String(process.env.REFRESH_TOKEN_TIME),
+
 };

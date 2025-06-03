@@ -3,7 +3,7 @@ import { CreateGroupTeacherDto } from './dto/create-group-teacher.dto';
 import { UpdateGroupTeacherDto } from './dto/update-group-teacher.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Groups_teachers } from './models/group-teacher.models';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class GroupTeachersService {
