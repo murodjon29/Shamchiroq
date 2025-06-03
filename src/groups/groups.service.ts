@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import {Groups} from './models/group.model'
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class GroupsService {

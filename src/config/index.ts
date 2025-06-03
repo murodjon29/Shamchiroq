@@ -9,4 +9,9 @@ export default {
   PG_USER: String(process.env.PG_USER),
   PG_PASS: String(process.env.PG_PASS),
   PG_DB: String(process.env.PG_DB),
+  BASE_URL: String(process.env.BASE_URL),
+  MAIL_HOST: String(process.env.MAIL_HOST),
+  MAIL_PORT: Number(process.env.MAIL_PORT),
+  MAIL_USER: String(process.env.MAIL_USER),
+  MAIL_PASS: String(process.env.MAIL_PASS),
 };

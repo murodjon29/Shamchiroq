@@ -4,17 +4,17 @@ import { Videos_of_project } from './models/videos-of-project.model';
 import { CreateVideosOfProjectDto } from './dto/create-videos-of-project.dto';
 import { UpdateVideosOfProjectDto } from './dto/update-videos-of-project.dto';
 import { Projects } from 'src/projects/models/project.model';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class VideosOfProjectsService {
   constructor(
     @InjectModel(Videos_of_project) private model: typeof Videos_of_project,
-  ) {}
+  ) { }
 
-  async create(createVideoDto: CreateVideosOfProjectDto) {
+  async create(createVideoDto: CreateVideosOfProjectDto, file?: Express.Multer.File | undefined) {
     try {
-      const video = await this.model.create(createVideoDto as any);
+      const video = await this.model.create({ ...createVideoDto });
       return { statusCode: 201, message: 'Success', data: video };
     } catch (error) {
       return handleError(error);

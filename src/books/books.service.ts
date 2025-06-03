@@ -3,8 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Books } from './models/book.model';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { handleError } from 'src/utils/responseError';
-import { Teachers } from 'src/teachers/models/teacher.model';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class BooksService {

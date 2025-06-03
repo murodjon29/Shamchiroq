@@ -25,7 +25,6 @@ export class Videos_of_project extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
-  url: string;
+  video_url: string;
 }
