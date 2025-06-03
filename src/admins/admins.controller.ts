@@ -6,37 +6,47 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  Res,
+  UseGuards
 } from '@nestjs/common';
-import { AdminsService } from './admins.service';
+import { AdminService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { ConfirmSignInAdminDto } from './dto/confirm-signin-admin';
+import { Response } from 'express';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { CheckRoles } from 'src/decorators/role.decorator';
+import { Role} from 'src/enum/index'
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseInterceptors(CacheInterceptor)
 @Controller('admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminService) {}
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.SUPERADMIN)
+  @UseInterceptors(FileInterceptor('file'))
   @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminsService.create(createAdminDto);
+  async createAdmin(
+    @Body() createAdminDto: CreateAdminDto) {
+    return this.adminsService.createAdmin(createAdminDto);
   }
 
-  @Get()
-  findAll() {
-    return this.adminsService.findAll();
+  @Post('signin')
+  async signInAdmin(@Body() signInDto: CreateAdminDto) {
+    return this.adminsService.signInAdmin(signInDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
+  @Post('confirm-signin')
+  async confirmSignInAdmin(
+    @Body() confirmSignInAdminDto: ConfirmSignInAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminsService.confirmSignInAdmin(confirmSignInAdminDto, res);
   }
 }
+
