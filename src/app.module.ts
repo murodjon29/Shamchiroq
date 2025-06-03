@@ -38,6 +38,7 @@ import { resolve } from 'path';
 import { MailModule } from './mail/mail.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -80,6 +81,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 
     CacheModule.register({
       isGlobal: true
+    }),
+
+    JwtModule.register({
+      global: true
     }),
 
     StudentsModule,
