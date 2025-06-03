@@ -6,21 +6,28 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { VideosOfProjectsService } from './videos-of-projects.service';
 import { CreateVideosOfProjectDto } from './dto/create-videos-of-project.dto';
 import { UpdateVideosOfProjectDto } from './dto/update-videos-of-project.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { VideoValidationPipe } from 'src/pipes/video.validation.pipe';
 
 @Controller('videos-of-projects')
 export class VideosOfProjectsController {
   constructor(
     private readonly videosOfProjectsService: VideosOfProjectsService,
-  ) {}
-
+  ) { }
+  @UseInterceptors(FileInterceptor('video'))
   @Post()
-  create(@Body() createVideosOfProjectDto: CreateVideosOfProjectDto) {
-    return this.videosOfProjectsService.create(createVideosOfProjectDto);
+  create(@Body() CreateVideosOfProjectDto: CreateVideosOfProjectDto,
+    @UploadedFile(new VideoValidationPipe) file?: Express.Multer.File
+  ) {
+    return this.videosOfProjectsService.create(CreateVideosOfProjectDto, file);
   }
+
 
   @Get()
   findAll() {

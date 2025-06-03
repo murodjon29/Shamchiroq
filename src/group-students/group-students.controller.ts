@@ -17,17 +17,17 @@ export class GroupStudentsController {
   constructor(private readonly groupStudentsService: GroupStudentsService) { }
 
   @Post()
-  create(@Body() createGroupStudentDto: CreateGroupStudentDto): Promise<Group_students> {
+  create(@Body() createGroupStudentDto: CreateGroupStudentDto): Promise<object> {
     return this.groupStudentsService.create(createGroupStudentDto);
   }
 
   @Get()
-  findAll(): Promise<Group_students[]> {
+  findAll(): Promise<object> {
     return this.groupStudentsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Group_students> {
+  findOne(@Param('id') id: string): Promise<object> {
     return this.groupStudentsService.findOne(+id);
   }
 
@@ -35,12 +35,12 @@ export class GroupStudentsController {
   update(
     @Param('id') id: string,
     @Body() updateGroupStudentDto: UpdateGroupStudentDto,
-  ): Promise<Group_students> {
+  ): Promise<object> {
     return this.groupStudentsService.update(+id, updateGroupStudentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string): Promise<object> {
     return this.groupStudentsService.remove(+id);
   }
 }

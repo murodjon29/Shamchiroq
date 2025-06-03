@@ -32,6 +32,12 @@ import { Videos_of_teachers } from './videos-of-teachers/models/videos-of-teache
 import { Videos_of_project } from './videos-of-projects/models/videos-of-project.model';
 import { Admins } from './admins/models/admin.model';
 import { Advertisements } from './advertisements/models/advertisement.models';
+import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { resolve } from 'path';
+import { MailModule } from './mail/mail.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -67,6 +73,15 @@ import { Advertisements } from './advertisements/models/advertisement.models';
         
       ],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: resolve(__dirname,  "..", "..", "upload"),
+      serveRoot: '/upload'
+    }),
+
+    CacheModule.register({
+      isGlobal: true
+    }),
+
     StudentsModule,
     AdminsModule,
     TeachersModule,
@@ -81,8 +96,13 @@ import { Advertisements } from './advertisements/models/advertisement.models';
     VacanciesModule,
     AdvertisementsModule,
     VideosOfProjectsModule,
+    FileModule,
+    MailModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {
+    provide: APP_INTERCEPTOR,
+    useClass: CacheInterceptor
+  }],
 })
 export class AppModule {}
