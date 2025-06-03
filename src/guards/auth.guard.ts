@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 import config from 'src/config';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

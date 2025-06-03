@@ -9,7 +9,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Admins } from './models/admin.model';
-import { handleError } from 'src/utils/responseError';
+import { handleError } from 'src/helpers/responseError';
 import { CryptoService } from 'src/utils/CryptoService';
 import config from 'src/config';
 import { Role } from 'src/enum/index';
@@ -30,7 +30,7 @@ export class AdminService implements OnModuleInit {
     private readonly mailService: MailService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   async onModuleInit(): Promise<void> {
     try {
@@ -42,8 +42,9 @@ export class AdminService implements OnModuleInit {
           config.SUPERADMIN_PASSWORD,
         );
         await this.adminModel.create({
+          username: config.SUPERADMIN_USERNAME,
           email: config.SUPERADMIN_EMAIL,
-          hashed_password: hashedPassword,
+          password: hashedPassword,
           role: Role.SUPERADMIN,
         });
       }
@@ -114,8 +115,7 @@ export class AdminService implements OnModuleInit {
       const { id, role } = admin.dataValues;
       const payload = { id, role };
       const accessToken = await this.tokenService.generateAccessToken(payload);
-      const refreshToken =
-        await this.tokenService.generateRefreshToken(payload);
+      const refreshToken = await this.tokenService.generateRefreshToken(payload)
       await this.tokenService.writeToCookie(
         res,
         'refreshTokenAdmin',

@@ -9,6 +9,6 @@ import { MailService } from 'src/mail/mail.service';
 @Module({
   imports: [SequelizeModule.forFeature([Teachers]), MailModule],
   controllers: [TeachersController],
-  providers: [TeachersService, MailService],
+  providers: [TeachersService],
 })
 export class TeachersModule {}

@@ -37,8 +37,8 @@ export class TeachersService {
       if (!isMatchPassword) throw new BadRequestException("Email adress or password incorrect")
       const otp = generateOTP()
 
-      await this.mailService.sendOTP(email, otp).then(res => console.log(res)).catch(err => console.log(err))
-      // await this.cacheManager.set(email, otp, 120000)
+      await this.mailService.sendOTP(email, otp)
+      await this.cacheManager.set(email, otp, 120000)
       return { statusCode: 200, message: "Success", data: email }
     } catch (error) {
       return handleError(error)
