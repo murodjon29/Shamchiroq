@@ -1,3 +1,4 @@
+
 import { generate } from 'otp-generator'
 
 export const generateOTP = () => {
@@ -7,3 +8,4 @@ export const generateOTP = () => {
         specialChars: false
     })
 }
+

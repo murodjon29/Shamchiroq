@@ -1,3 +1,4 @@
+
 import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
 import config from "src/config";
@@ -14,4 +15,5 @@ export class MailService{
             text: otp
         })
     }
+
 }
