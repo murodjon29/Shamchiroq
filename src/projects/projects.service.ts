@@ -46,9 +46,11 @@ export class ProjectsService {
         throw new NotFoundException('Project not found');
       }
 
-      const project = await this.model.update(updateProjectDto, { where: { id },returning: true,
+      const [_, [updatedProject]] = await this.model.update(updateProjectDto, {
+        where: { id },
+        returning: true,
       });
-      return { statusCode: 200, message: 'Success', data: project[1][0] };
+      return { statusCode: 200, message: 'Success', data: updatedProject };
     } catch (error) {
       return handleError(error);
     }
