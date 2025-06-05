@@ -31,4 +31,10 @@ export class TokenService {
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
   }
+
+  async verifyRefreshtoken( refreshToken: string ){
+    return this.jwtService.verify(refreshToken, {
+      secret: config.REFRESH_TOKEN_KEY
+    });
+  }
 }

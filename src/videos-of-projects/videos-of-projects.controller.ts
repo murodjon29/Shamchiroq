@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { VideosOfProjectsService } from './videos-of-projects.service';
 import { CreateVideosOfProjectDto } from './dto/create-videos-of-project.dto';
@@ -20,12 +21,13 @@ export class VideosOfProjectsController {
   constructor(
     private readonly videosOfProjectsService: VideosOfProjectsService,
   ) { }
+
   @UseInterceptors(FileInterceptor('video'))
   @Post()
-  create(@Body() CreateVideosOfProjectDto: CreateVideosOfProjectDto,
+  create(@Body() createVideosOfProjectDto: CreateVideosOfProjectDto,
     @UploadedFile(new VideoValidationPipe) file?: Express.Multer.File
   ) {
-    return this.videosOfProjectsService.create(CreateVideosOfProjectDto, file);
+    return this.videosOfProjectsService.create(createVideosOfProjectDto, file);
   }
 
 
@@ -39,12 +41,14 @@ export class VideosOfProjectsController {
     return this.videosOfProjectsService.findOne(+id);
   }
 
+  @UseInterceptors(FileInterceptor('file'))
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateVideosOfProjectDto: UpdateVideosOfProjectDto,
+    @UploadedFile(new VideoValidationPipe()) file?: Express.Multer.File 
   ) {
-    return this.videosOfProjectsService.update(+id, updateVideosOfProjectDto);
+    return this.videosOfProjectsService.update(+id, updateVideosOfProjectDto, file);
   }
 
   @Delete(':id')

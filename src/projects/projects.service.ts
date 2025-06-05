@@ -7,7 +7,7 @@ import { handleError } from 'src/helpers/responseError';
 
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectModel(Projects) private model: typeof Projects) {}
+  constructor(@InjectModel(Projects) private model: typeof Projects) { }
 
   async create(createProjectDto: CreateProjectDto) {
     try {
@@ -69,4 +69,5 @@ export class ProjectsService {
       return handleError(error);
     }
   }
-}
+
+} 
