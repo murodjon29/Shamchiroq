@@ -46,4 +46,5 @@ export class Teachers extends Model {
 
   @HasMany(() => Videos_of_teachers)
   videos_of_teachers: Videos_of_teachers[];
+  video: any;
 }

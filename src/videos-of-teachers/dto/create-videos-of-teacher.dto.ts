@@ -1,12 +1,14 @@
-export class CreateVideosOfTeacherDto {
+import { IsNotEmpty, IsString } from "class-validator"
 
+export class CreateVideosOfTeacherDto {
+    @IsString()
+    @IsNotEmpty()
     name: string
 
-
+    @IsString()
+    @IsNotEmpty()
     description: string
 
-
-    ulr: string
-
-    teacher_id: number
+    @IsString()
+    teacher_id: string
 }

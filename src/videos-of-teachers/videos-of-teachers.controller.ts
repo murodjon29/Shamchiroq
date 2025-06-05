@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { VideosOfTeachersService } from './videos-of-teachers.service';
 import { CreateVideosOfTeacherDto } from './dto/create-videos-of-teacher.dto';
@@ -24,7 +25,7 @@ export class VideosOfTeachersController {
   @UseInterceptors(FileInterceptor('video'))
   @Post()
   create(@Body() createVideosOfTeacherDto: CreateVideosOfTeacherDto,
-  @UploadedFile( new VideoValidationPipe) file?: Express.Multer.File
+    @UploadedFile(new VideoValidationPipe) file?: Express.Multer.File
   ) {
     return this.videosOfTeachersService.create(createVideosOfTeacherDto, file);
   }
@@ -39,16 +40,18 @@ export class VideosOfTeachersController {
     return this.videosOfTeachersService.findOne(+id);
   }
 
+  @UseInterceptors(FileInterceptor('video'))
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateVideosOfTeacherDto: UpdateVideosOfTeacherDto,
+    @UploadedFile(new VideoValidationPipe()) file?: Express.Multer.File
   ) {
-    return this.videosOfTeachersService.update(+id, updateVideosOfTeacherDto);
+    return this.videosOfTeachersService.update(+id, updateVideosOfTeacherDto, file);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.videosOfTeachersService.remove(+id);
   }
 }

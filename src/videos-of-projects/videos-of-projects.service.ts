@@ -5,26 +5,30 @@ import { CreateVideosOfProjectDto } from './dto/create-videos-of-project.dto';
 import { UpdateVideosOfProjectDto } from './dto/update-videos-of-project.dto';
 import { Projects } from 'src/projects/models/project.model';
 import { handleError } from 'src/helpers/responseError';
+import { FileService } from 'src/file/file.service';
+import { successRes } from 'src/helpers/success-response';
 
 @Injectable()
 export class VideosOfProjectsService {
-  constructor(
-    @InjectModel(Videos_of_project) private model: typeof Videos_of_project,
-  ) { }
+  constructor(@InjectModel(Videos_of_project) private model: typeof Videos_of_project, private readonly fileService: FileService) { }
 
-  async create(createVideoDto: CreateVideosOfProjectDto, file?: Express.Multer.File | undefined) {
+  async create(createProjectDto: CreateVideosOfProjectDto, file?: Express.Multer.File) {
     try {
-      const video = await this.model.create({ ...createVideoDto });
-      return { statusCode: 201, message: 'Success', data: video };
+      let video: undefined | string
+      if (file) {
+        video = await this.fileService.createFile(file)
+      }
+      const Videos_of_project = await this.model.create({ ...createProjectDto, video_url: video })
+      return successRes(Videos_of_project)
     } catch (error) {
-      return handleError(error);
+      handleError(error)
     }
   }
 
   async findAll() {
     try {
       const videos = await this.model.findAll({ include: { model: Projects } });
-      return { statusCode: 200, message: 'Success', data: videos };
+      return successRes(videos);
     } catch (error) {
       return handleError(error);
     }
@@ -38,23 +42,24 @@ export class VideosOfProjectsService {
       if (!video) {
         throw new NotFoundException('Video not found');
       }
-      return { statusCode: 200, message: 'Success', data: video };
+      return successRes(video);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async update(id: number, updateVideoDto: UpdateVideosOfProjectDto) {
+  async update(id: number, updateVideoDto: UpdateVideosOfProjectDto, file: Express.Multer.File | undefined) {
     try {
-      const found = await this.model.findByPk(id);
-      if (!found) {
-        throw new NotFoundException('Video not found');
+      const videos_of_project = await this.model.findByPk(id)
+      let video = videos_of_project?.video_url
+      if (file) {
+        if (video && (await this.fileService.existFile(video))) {
+          await this.fileService.deleteFile(video)
+        }
+        video = await this.fileService.createFile(file)
       }
-      const video = await this.model.update(updateVideoDto, {
-        where: { id },
-        returning: true,
-      });
-      return { statusCode: 200, message: 'Success', data: video[1][0] };
+      const updateVideo = await this.model.update({ ...updateVideoDto, video }, { where: { id }, returning: true })
+      return successRes(updateVideo)
     } catch (error) {
       return handleError(error);
     }
@@ -66,8 +71,11 @@ export class VideosOfProjectsService {
       if (!found) {
         throw new NotFoundException('Video not found');
       }
+      if(found.video_url && (await this.fileService.existFile(found.video_url))){
+        await this.fileService.deleteFile(found.video_url)
+      }
       await this.model.destroy({ where: { id } });
-      return { statusCode: 200, message: 'Success', data: {} };
+      return successRes({message: "Videos of projects deleted successfuly"})
     } catch (error) {
       return handleError(error);
     }

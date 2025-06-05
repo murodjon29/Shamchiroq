@@ -1,4 +1,10 @@
+import { IsNotEmpty, IsNumber, IsString } from "class-validator"
+
 export class CreateVideosOfProjectDto {
-    project_id: Number
-    url: string
+    @IsNotEmpty()
+    project_id: string
+
+    // @IsString()
+    // // @IsNotEmpty()
+    // video_url: string
 }

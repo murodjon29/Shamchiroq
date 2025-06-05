@@ -3,4 +3,4 @@ import { CreateVideosOfTeacherDto } from './create-videos-of-teacher.dto';
 
 export class UpdateVideosOfTeacherDto extends PartialType(
   CreateVideosOfTeacherDto,
-) {}
+) { }
