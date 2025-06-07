@@ -4,30 +4,31 @@ import { Books } from './models/book.model';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { handleError } from 'src/helpers/responseError';
+import { successRes } from 'src/helpers/success-response';
 
 @Injectable()
 export class BooksService {
   constructor(@InjectModel(Books) private model: typeof Books) {}
 
-  async create(createBookDto: CreateBookDto) {
+  async create(createBookDto: CreateBookDto): Promise<object> {
     try {
       const book = await this.model.create({ ...createBookDto });
-      return { statusCode: 201, message: 'Success', data: book };
+      return successRes(book, 201);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<object> {
     try {
       const books = await this.model.findAll({ include: { all: true } });
-      return { statusCode: 200, message: 'Success', data: books };
+      return successRes(books);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<object> {
     try {
       const book = await this.model.findByPk(id, {
         include: { all: true },
@@ -35,13 +36,13 @@ export class BooksService {
       if (!book) {
         throw new NotFoundException('Book not found');
       }
-      return { statusCode: 200, message: 'Success', data: book };
+      return successRes(book);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async update(id: number, updateBookDto: UpdateBookDto) {
+  async update(id: number, updateBookDto: UpdateBookDto): Promise<object> {
     try {
       const found = await this.model.findByPk(id);
       if (!found) {
@@ -52,13 +53,13 @@ export class BooksService {
         where: { id },
         returning: true,
       });
-      return { statusCode: 200, message: 'Success', data: book[1][0] };
+      return successRes(book[1][0]);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<object> {
     try {
       const found = await this.model.findByPk(id);
       if (!found) {
@@ -66,7 +67,7 @@ export class BooksService {
       }
 
       await this.model.destroy({ where: { id } });
-      return { statusCode: 200, message: 'Success', data: {} };
+      return successRes({ message: 'Deleted Succeessfuly' });
     } catch (error) {
       return handleError(error);
     }

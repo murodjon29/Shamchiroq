@@ -71,20 +71,19 @@ import { JwtModule } from '@nestjs/jwt';
         Videos_of_project,
         Admins,
         Advertisements,
-        
       ],
     }),
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname,  "..", "..", "upload"),
-      serveRoot: '/upload'
+      rootPath: resolve(__dirname, '..', '..', 'upload'),
+      serveRoot: '/upload',
     }),
 
     CacheModule.register({
-      isGlobal: true
+      isGlobal: true,
     }),
 
     JwtModule.register({
-      global: true
+      global: true,
     }),
 
     StudentsModule,
@@ -105,9 +104,12 @@ import { JwtModule } from '@nestjs/jwt';
     MailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_INTERCEPTOR,
-    useClass: CacheInterceptor
-  }],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule {}

@@ -1,11 +1,11 @@
-import { IsInt, IsNotEmpty } from "class-validator";
+import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class CreateStudentProjectDto {
-    @IsInt()
-    @IsNotEmpty()
-    studentId: number;
+  @IsInt()
+  @IsNotEmpty()
+  studentId: number;
 
-    @IsInt()
-    @IsNotEmpty()
-    projectId: number;
+  @IsInt()
+  @IsNotEmpty()
+  projectId: number;
 }

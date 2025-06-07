@@ -11,4 +11,4 @@ import { FileModule } from 'src/file/file.module';
   controllers: [VideosOfTeachersController],
   providers: [VideosOfTeachersService, FileService],
 })
-export class VideosOfTeachersModule { }
+export class VideosOfTeachersModule {}

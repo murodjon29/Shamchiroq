@@ -11,4 +11,4 @@ import { Students } from 'src/students/models/student.model';
   controllers: [GroupStudentsController],
   providers: [GroupStudentsService],
 })
-export class GroupStudentsModule { }
+export class GroupStudentsModule {}

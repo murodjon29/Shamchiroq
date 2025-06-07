@@ -4,61 +4,77 @@ import { UpdateGroupTeacherDto } from './dto/update-group-teacher.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Groups_teachers } from './models/group-teacher.models';
 import { handleError } from 'src/helpers/responseError';
+import { successRes } from 'src/helpers/success-response';
 
 @Injectable()
 export class GroupTeachersService {
-  constructor(@InjectModel(Groups_teachers) private model: typeof Groups_teachers) { }
+  constructor(
+    @InjectModel(Groups_teachers) private model: typeof Groups_teachers,
+  ) {}
 
-  async create(createGroupTeacherDto: CreateGroupTeacherDto) {
+  async create(createGroupTeacherDto: CreateGroupTeacherDto): Promise<object> {
     try {
-      const groupTeacher = await this.model.create({ ...createGroupTeacherDto })
-      return { statusCode: 201, message: "Success", data: groupTeacher }
+      const groupTeacher = await this.model.create({
+        ...createGroupTeacherDto,
+      });
+      return successRes(groupTeacher, 201);
     } catch (error) {
-      handleError(error)
+      return handleError(error);
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<object> {
     try {
-      const groupTeachers = await this.model.findAll({ include: { all: true } })
-      return { statusCode: 200, message: "Success", data: groupTeachers }
+      const groupTeachers = await this.model.findAll({
+        include: { all: true },
+      });
+      return successRes(groupTeachers);
     } catch (error) {
-      handleError(error)
+      return handleError(error);
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<object> {
     try {
-      const groupTeacher = await this.model.findByPk(id, { include: { all: true } })
+      const groupTeacher = await this.model.findByPk(id, {
+        include: { all: true },
+      });
       if (!groupTeacher) {
-        throw new NotFoundException()
+        throw new NotFoundException();
       }
-      return { statusCode: 200, message: "Success", data: groupTeacher }
+      return successRes(groupTeacher);
     } catch (error) {
-      handleError(error)
+      return handleError(error);
     }
   }
 
-  async update(id: number, updateGroupTeacherDto: UpdateGroupTeacherDto) {
+  async update(
+    id: number,
+    updateGroupTeacherDto: UpdateGroupTeacherDto,
+  ): Promise<object> {
     try {
-      if (!await this.model.findByPk(id)) {
-        throw new NotFoundException()
+      if (!(await this.model.findByPk(id))) {
+        throw new NotFoundException();
       }
-      const groupTeacher = await this.model.update(updateGroupTeacherDto, { where: { id }, returning: true })
-      return { statusCode: 200, message: "Success", data: groupTeacher[1][0] }
+      const groupTeacher = await this.model.update(updateGroupTeacherDto, {
+        where: { id },
+        returning: true,
+      });
+      return successRes(groupTeacher[1][0]);
     } catch (error) {
-      handleError(error)
+      return handleError(error);
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<object> {
     try {
-      if (!await this.model.findByPk(id)) {
-        throw new NotFoundException()
+      if (!(await this.model.findByPk(id))) {
+        throw new NotFoundException();
       }
-      await this.model.destroy({ where: { id } })
+      await this.model.destroy({ where: { id } });
+      return successRes({ message: 'Deleted Succesfully' });
     } catch (error) {
-      handleError(error)
+      return handleError(error);
     }
   }
 }

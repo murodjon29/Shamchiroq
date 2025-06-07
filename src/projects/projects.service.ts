@@ -4,15 +4,16 @@ import { Projects } from './models/project.model';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { handleError } from 'src/helpers/responseError';
+import { successRes } from 'src/helpers/success-response';
 
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectModel(Projects) private model: typeof Projects) { }
+  constructor(@InjectModel(Projects) private model: typeof Projects) {}
 
   async create(createProjectDto: CreateProjectDto) {
     try {
       const project = await this.model.create(createProjectDto as any);
-      return { statusCode: 201, message: 'Success', data: project };
+      return successRes(project, 201);
     } catch (error) {
       return handleError(error);
     }
@@ -21,7 +22,7 @@ export class ProjectsService {
   async findAll() {
     try {
       const projects = await this.model.findAll({ include: { all: true } });
-      return { statusCode: 200, message: 'Success', data: projects };
+      return successRes(projects);
     } catch (error) {
       return handleError(error);
     }
@@ -33,30 +34,33 @@ export class ProjectsService {
       if (!project) {
         throw new NotFoundException('Project not found');
       }
-      return { statusCode: 200, message: 'Success', data: project };
+      return successRes(project);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async update(id: number, updateProjectDto: UpdateProjectDto) {
+  async update(
+    id: number,
+    updateProjectDto: UpdateProjectDto,
+  ): Promise<object> {
     try {
       const found = await this.model.findByPk(id);
       if (!found) {
         throw new NotFoundException('Project not found');
       }
 
-      const [_, [updatedProject]] = await this.model.update(updateProjectDto, {
+      const updatedProject = await this.model.update(updateProjectDto, {
         where: { id },
         returning: true,
       });
-      return { statusCode: 200, message: 'Success', data: updatedProject };
+      return successRes(updatedProject[1][0]);
     } catch (error) {
       return handleError(error);
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<object> {
     try {
       const found = await this.model.findByPk(id);
       if (!found) {
@@ -64,10 +68,9 @@ export class ProjectsService {
       }
 
       await this.model.destroy({ where: { id } });
-      return { statusCode: 200, message: 'Success', data: {} };
+      return successRes({ message: 'Deleted Successfully' });
     } catch (error) {
       return handleError(error);
     }
   }
-
-} 
+}

@@ -8,8 +8,8 @@ import { MailModule } from 'src/mail/mail.module';
 import { TokenService } from 'src/utils/TokenService';
 
 @Module({
-  imports:[SequelizeModule.forFeature([Admins]),MailModule],
+  imports: [SequelizeModule.forFeature([Admins]), MailModule],
   controllers: [AdminsController],
-  providers: [AdminService,CryptoService,TokenService],
+  providers: [AdminService, CryptoService, TokenService],
 })
 export class AdminsModule {}
