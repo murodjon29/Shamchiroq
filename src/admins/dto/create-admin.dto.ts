@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 
 export class CreateAdminDto {
   @IsNotEmpty()
-  userName:string;
+  userName: string;
 
   @IsEmail()
   @IsNotEmpty()

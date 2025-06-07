@@ -7,7 +7,6 @@ import { MailModule } from 'src/mail/mail.module';
 import { CryptoService } from 'src/utils/CryptoService';
 import { TokenService } from 'src/utils/TokenService';
 
-
 @Module({
   imports: [SequelizeModule.forFeature([Teachers]), MailModule],
   controllers: [TeachersController],

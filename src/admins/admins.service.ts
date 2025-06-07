@@ -18,7 +18,7 @@ import { successRes } from 'src/helpers/success-response';
 import { MailService } from 'src/mail/mail.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { ConfirmSignInAdminDto } from "./dto/confirm-signin-admin";
+import { ConfirmSignInAdminDto } from './dto/confirm-signin-admin';
 import { TokenService } from 'src/utils/TokenService';
 import { Response } from 'express';
 
@@ -30,7 +30,7 @@ export class AdminService implements OnModuleInit {
     private readonly mailService: MailService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly tokenService: TokenService,
-  ) { }
+  ) {}
 
   async onModuleInit(): Promise<void> {
     try {
@@ -53,9 +53,7 @@ export class AdminService implements OnModuleInit {
     }
   }
 
-  async createAdmin(
-    createAdminDto: CreateAdminDto
-  ): Promise<object> {
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<object> {
     try {
       const { email, password } = createAdminDto;
       const existsEmail = await this.adminModel.findOne({
@@ -67,7 +65,7 @@ export class AdminService implements OnModuleInit {
       const hashedPassword = await this.cryptoService.encrypt(password);
       const admin = await this.adminModel.create({
         email,
-        hashed_password: hashedPassword
+        hashed_password: hashedPassword,
       });
       return successRes(admin, 201);
     } catch (error) {
@@ -115,7 +113,8 @@ export class AdminService implements OnModuleInit {
       const { id, role } = admin.dataValues;
       const payload = { id, role };
       const accessToken = await this.tokenService.generateAccessToken(payload);
-      const refreshToken = await this.tokenService.generateRefreshToken(payload)
+      const refreshToken =
+        await this.tokenService.generateRefreshToken(payload);
       await this.tokenService.writeToCookie(
         res,
         'refreshTokenAdmin',

@@ -8,8 +8,15 @@ import { Projects } from 'src/projects/models/project.model';
 import { Students_projects } from 'src/student-project/model/student-project.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Students, Group_students, Projects, Students_projects])],
+  imports: [
+    SequelizeModule.forFeature([
+      Students,
+      Group_students,
+      Projects,
+      Students_projects,
+    ]),
+  ],
   controllers: [StudentsController],
   providers: [StudentsService],
 })
-export class StudentsModule { }
+export class StudentsModule {}

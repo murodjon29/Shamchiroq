@@ -9,4 +9,4 @@ import { Groups_teachers } from './models/group-teacher.models';
   controllers: [GroupTeachersController],
   providers: [GroupTeachersService],
 })
-export class GroupTeachersModule { }
+export class GroupTeachersModule {}
