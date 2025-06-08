@@ -3,7 +3,9 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
   OnModuleInit,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -124,5 +126,95 @@ export class AdminService implements OnModuleInit {
     } catch (error) {
       return handleError(error);
     }
+  }
+  async refreshTokenAdmin(refreshToken: string): Promise<object> {
+    const decodedToken =
+      await this.tokenService.verifyRefreshToken(refreshToken);
+    if (!decodedToken) {
+      throw new UnauthorizedException('Refresh token expired');
+    }
+    const admin = await this.findAdminById(decodedToken.id);
+    const payload = {
+      id: admin.id,
+      role: admin.role,
+    };
+    const accessToken = await this.tokenService.generateAccessToken(payload);
+    return successRes({ token: accessToken });
+  }
+
+  async signOutAdmin(refreshToken: string, res: Response): Promise<object> {
+    try {
+      const decodedToken =
+        await this.tokenService.verifyRefreshToken(refreshToken);
+      if (!decodedToken) {
+        throw new UnauthorizedException('Refresh token expired');
+      }
+      await this.findAdminById(decodedToken.id);
+      res.clearCookie('refreshTokenAdmin');
+      return successRes({ message: 'Admin signed out successfully' });
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async getAllAdmins(): Promise<object> {
+    try {
+      const admins = await this.adminModel.findAll();
+      return successRes(admins);
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async getAdminById(id: number): Promise<object> {
+    try {
+      const admin = await this.findAdminById(id);
+      return successRes(admin);
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async updateAdmin(
+    id: number,
+    updateAdminDto: UpdateAdminDto,
+  ): Promise<object> {
+    try {
+      const admin = await this.findAdminById(id);
+      const { email } = updateAdminDto;
+      if (email) {
+        const existsEmail = await this.adminModel.findOne({ where: { email } });
+        if (id != existsEmail?.dataValues.id) {
+          throw new ConflictException('Email address already exists');
+        }
+      }
+      const updatedAdmin = await this.adminModel.update(
+        {
+          ...updateAdminDto,
+        },
+        { where: { id }, returning: true },
+      );
+      return successRes(updatedAdmin[1][0]);
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async deleteAdmin(id: number): Promise<object> {
+    try {
+      const admin = await this.findAdminById(id);
+      await this.adminModel.destroy({ where: { id } });
+      return successRes({ message: 'Admin deleted successfully' });
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async findAdminById(id: number): Promise<Admins> {
+    const admin = await this.adminModel.findByPk(id);
+    if (!admin) {
+      throw new NotFoundException(`Admin not found by ID ${id}`);
+    }
+    return admin.dataValues;
   }
 }
