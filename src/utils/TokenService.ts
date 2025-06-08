@@ -32,7 +32,7 @@ export class TokenService {
     });
   }
 
-  async verifyRefreshtoken(refreshToken: string) {
+  async verifyRefreshToken(refreshToken: string) {
     return this.jwtService.verify(refreshToken, {
       secret: config.REFRESH_TOKEN_KEY,
     });
