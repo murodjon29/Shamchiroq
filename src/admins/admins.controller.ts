@@ -94,5 +94,3 @@ export class AdminsController {
     return this.adminService.deleteAdmin(id);
   }
 }
-
-

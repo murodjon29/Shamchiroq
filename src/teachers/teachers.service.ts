@@ -102,7 +102,7 @@ export class TeachersService {
   async signoutTeacher(refreshToken: string, res: Response): Promise<object> {
     try {
       const decodedToken =
-        await this.tokenService.verifyRefreshtoken(refreshToken);
+        await this.tokenService.verifyRefreshToken(refreshToken);
       if (!decodedToken)
         throw new UnauthorizedException('Refresh token expired');
       await this.findTeacherById(decodedToken.id);
