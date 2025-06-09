@@ -25,7 +25,7 @@ export class FileService {
           resolve();
         });
       });
-      return `${this.baseUrl}/${fileName}`;
+      return `${this.baseUrl}${fileName}`;
     } catch (error) {
       return handleError(error);
     }
@@ -50,7 +50,9 @@ export class FileService {
 
   async existFile(fileName: string): Promise<boolean> {
     try {
+      
       fileName = fileName.split(this.baseUrl)[1];
+      console.log(fileName);
       const file = resolve(this.filePath, fileName);
       if (existsSync(file)) {
         return true;

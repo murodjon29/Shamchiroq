@@ -52,8 +52,8 @@ export class VideosOfProjectsController {
     return this.videosOfProjectsService.findOne(+id);
   }
 
-  @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseInterceptors(FileInterceptor('video'))
+  @UseGuards(AuthGuard, RolesGuard)
   @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(

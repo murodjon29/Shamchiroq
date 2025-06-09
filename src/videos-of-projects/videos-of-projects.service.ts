@@ -64,10 +64,16 @@ export class VideosOfProjectsService {
   ): Promise<object> {
     try {
       const videos_of_project = await this.model.findByPk(id);
-      let video = videos_of_project?.video_url;
+      let video = videos_of_project?.dataValues.video_url
+      console.log(video);
+      console.log(await this.fileService.existFile(video));
+      
+      
       if (file) {
         if (video && (await this.fileService.existFile(video))) {
           await this.fileService.deleteFile(video);
+          // console.log(video, "================================");
+          
         }
         video = await this.fileService.createFile(file);
       }
@@ -88,10 +94,10 @@ export class VideosOfProjectsService {
         throw new NotFoundException('Video not found');
       }
       if (
-        found.video_url &&
-        (await this.fileService.existFile(found.video_url))
+        found.dataValues.video_url &&
+        (await this.fileService.existFile(found.dataValues.video_url))
       ) {
-        await this.fileService.deleteFile(found.video_url);
+        await this.fileService.deleteFile(found.dataValues.video_url);
       }
       await this.model.destroy({ where: { id } });
       return successRes({ message: 'Videos of projects deleted successfuly' });
