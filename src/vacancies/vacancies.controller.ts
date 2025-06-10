@@ -16,7 +16,7 @@ export class VacanciesController {
   constructor(private readonly vacanciesService: VacanciesService) {}
 
   @Post()
-  create(@Body() createVacancyDto: CreateVacancyDto) {
+  acreate(@Body() createVacancyDto: CreateVacancyDto) :Promise<object>{
     return this.vacanciesService.create(createVacancyDto);
   }
 
