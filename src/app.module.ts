@@ -37,7 +37,11 @@ import { MailModule } from './mail/mail.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+
+import { AdvertisementsService } from './advertisements/advertisements.service';
+
 import { Videos_of_project } from './projects/models/videos-of-project.model';
+
 
 @Module({
   imports: [
@@ -69,7 +73,10 @@ import { Videos_of_project } from './projects/models/videos-of-project.model';
         Videos_of_teachers,
         Admins,
         Advertisements,
+        Vacancies,
+        Advertisements
         Videos_of_project,
+
       ],
     }),
     ServeStaticModule.forRoot({
@@ -100,6 +107,7 @@ import { Videos_of_project } from './projects/models/videos-of-project.model';
     AdvertisementsModule,
     FileModule,
     MailModule,
+    VacanciesModule,
   ],
   controllers: [AppController],
   providers: [
