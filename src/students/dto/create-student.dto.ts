@@ -7,6 +7,7 @@ export class CreateStudentDto {
 
   @IsEmail()
   @IsNotEmpty()
+  @IsString()
   email: string;
 
   @IsString()

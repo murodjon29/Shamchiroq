@@ -21,11 +21,14 @@ export class VideoValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     try {
       if (value) {
-        const ext = extname(value.originalname).toLowerCase();
-        if (!this.extensions.includes(ext)) {
-          throw new BadRequestException(
-            `Only allowed files ${this.extensions.join(', ')}`,
-          );
+        const files = Array.isArray(value) ? value : [value];
+        for (let file of files) {
+          const ext = extname(file.originalname).toLowerCase();
+          if (!this.extensions.includes(ext)) {
+            throw new BadRequestException(
+              `Only allowed files ${this.extensions.join(', ')}`,
+            );
+          }
         }
       }
       return value;

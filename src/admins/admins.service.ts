@@ -66,6 +66,7 @@ export class AdminService implements OnModuleInit {
       }
       const hashedPassword = await this.cryptoService.encrypt(password);
       const admin = await this.adminModel.create({
+        ...createAdminDto,
         email,
         password: hashedPassword,
       });
@@ -81,7 +82,7 @@ export class AdminService implements OnModuleInit {
       const admin = await this.adminModel.findOne({ where: { email } });
       if (!admin) {
         throw new BadRequestException('Email address or password incorrect');
-      }      
+      }
       const isMatchPassword = await this.cryptoService.decrypt(
         password,
         admin.dataValues?.password,

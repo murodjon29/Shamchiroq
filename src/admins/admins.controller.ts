@@ -78,7 +78,8 @@ export class AdminsController {
     return this.adminService.getAdminById(id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.SUPERADMIN)
   @Patch(':id')
   async updateAdmin(
     @Param('id', ParseIntPipe) id: number,

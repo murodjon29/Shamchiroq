@@ -7,6 +7,10 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -15,16 +19,27 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { CheckRoles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum';
-import { SelfGuard } from 'src/guards/self.guard';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { handleError } from 'src/helpers/responseError';
+import { VideoValidationPipe } from 'src/pipes/video.validation.pipe';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
+
   @UseGuards(AuthGuard, RolesGuard)
   @CheckRoles(Role.ADMIN)
+  @UseInterceptors(FilesInterceptor('videos'))
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto): Promise<object> {
-    return this.projectsService.create(createProjectDto);
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+    @UploadedFiles(new VideoValidationPipe()) file?: Express.Multer.File[],
+  ) {
+    try {
+      return this.projectsService.create(createProjectDto, file);
+    } catch (error) {
+      return handleError(error);
+    }
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -34,25 +49,30 @@ export class ProjectsController {
     return this.projectsService.findAll();
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<object> {
     return this.projectsService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
+  @UseInterceptors(FilesInterceptor('videos'))
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateProjectDto: UpdateProjectDto,
+    @UploadedFiles(new VideoValidationPipe()) file?: Express.Multer.File[],
   ): Promise<object> {
-    return this.projectsService.update(+id, updateProjectDto);
+    
+    return this.projectsService.update(+id, updateProjectDto, file);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @CheckRoles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<object> {
-    return this.projectsService.remove(+id);
+  delete(@Param('id', ParseIntPipe) id: number): Promise<object | undefined> {
+    return this.projectsService.delete(id);
   }
 }

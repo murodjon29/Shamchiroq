@@ -33,6 +33,9 @@ export class FileService {
 
   async deleteFile(fileName: string): Promise<void> {
     try {
+      if (!fileName) {
+        throw new BadRequestException('Invalid file URL');
+      }
       fileName = fileName.split(this.baseUrl)[1];
       const file = resolve(this.filePath, fileName);
       if (!existsSync(file))
@@ -50,7 +53,6 @@ export class FileService {
 
   async existFile(fileName: string): Promise<boolean> {
     try {
-      
       fileName = fileName.split(this.baseUrl)[1];
       console.log(fileName);
       const file = resolve(this.filePath, fileName);

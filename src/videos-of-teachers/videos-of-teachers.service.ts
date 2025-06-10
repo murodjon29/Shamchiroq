@@ -67,7 +67,7 @@ export class VideosOfTeachersService {
       const teacher_videos = await this.model.findByPk(id);
       if (!teacher_videos)
         throw new NotFoundException('Videos of teachers not found');
-      let video = teacher_videos?.video_url;
+      let video = teacher_videos?.dataValues.video_url;
       if (file) {
         if (video && (await this.fileService.existFile(video))) {
           await this.fileService.deleteFile(video);
@@ -88,10 +88,15 @@ export class VideosOfTeachersService {
     try {
       const videos_of_teachers = await this.model.findByPk(id);
       if (
-        videos_of_teachers?.video_url &&
-        (await this.fileService.existFile(videos_of_teachers.video_url))
-      )
-        await this.fileService.deleteFile(videos_of_teachers.video_url);
+        videos_of_teachers?.dataValues.video_url &&
+        (await this.fileService.existFile(
+          videos_of_teachers.dataValues.video_url,
+        ))
+      ) {
+        await this.fileService.deleteFile(
+          videos_of_teachers.dataValues.video_url,
+        );
+      }
       await this.model.destroy({ where: { id } });
       return successRes({ message: 'Videos-of-projects deleted succesfully' });
     } catch (error) {
