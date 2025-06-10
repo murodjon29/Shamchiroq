@@ -35,13 +35,15 @@ export class GroupsController {
     return this.groupsService.findAll();
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<object> {
     return this.groupsService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,

@@ -5,7 +5,6 @@ import { Role } from 'src/enum';
 export class Admins extends Model {
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
   username: string;
 

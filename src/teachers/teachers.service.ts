@@ -32,7 +32,7 @@ export class TeachersService {
     private readonly cryptoService: CryptoService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   async create(createTeacherDto: CreateTeacherDto): Promise<object> {
     try {
@@ -142,14 +142,17 @@ export class TeachersService {
       if (!this.findTeacherById(id))
         throw new NotFoundException('Teacher not found');
 
-      const { email } = updateTeacherDto;
-
+      const { email, password } = updateTeacherDto;
       if (email) {
         const existEmail = await this.model.findOne({ where: { email } });
         if (id != existEmail?.dataValues.id)
           throw new ConflictException('Email address already exists');
       }
-      const teacher = await this.model.update(updateTeacherDto, {
+      let updateData = { ...updateTeacherDto };
+      if (password) {
+        updateData.password = await this.cryptoService.encrypt(password);
+      }
+      const teacher = await this.model.update(updateData, {
         where: { id },
         returning: true,
       });

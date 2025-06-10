@@ -35,13 +35,15 @@ export class LessonController {
     return this.lessonService.findAll();
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<object> {
     return this.lessonService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,

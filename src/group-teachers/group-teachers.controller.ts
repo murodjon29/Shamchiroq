@@ -37,13 +37,15 @@ export class GroupTeachersController {
     return this.groupTeachersService.findAll();
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.groupTeachersService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
