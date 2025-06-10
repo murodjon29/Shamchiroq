@@ -23,25 +23,28 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Post()
   create(@Body() createBookDto: CreateBookDto): Promise<object> {
     return this.booksService.create(createBookDto);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @CheckRoles(Role.SUPERADMIN)
+  @CheckRoles(Role.ADMIN)
   @Get()
   findAll(): Promise<object> {
     return this.booksService.findAll();
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<object> {
     return this.booksService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -51,7 +54,7 @@ export class BooksController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @CheckRoles(Role.SUPERADMIN)
+  @CheckRoles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<object> {
     return this.booksService.remove(+id);

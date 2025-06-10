@@ -8,8 +8,6 @@ import {
   Delete,
   UseInterceptors,
   Res,
-  ParseIntPipe,
-  UploadedFile,
   UseGuards,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
@@ -73,7 +71,8 @@ export class TeachersController {
     return this.teachersService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, SelfGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @CheckRoles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,

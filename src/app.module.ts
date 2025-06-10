@@ -14,7 +14,6 @@ import { ProjectsModule } from './projects/projects.module';
 import { BooksModule } from './books/books.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
 import { AdvertisementsModule } from './advertisements/advertisements.module';
-import { VideosOfProjectsModule } from './videos-of-projects/videos-of-projects.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import config from './config';
@@ -29,7 +28,6 @@ import { Groups } from './groups/models/group.model';
 import { Students_projects } from './student-project/model/student-project.entity';
 import { Vacancies } from './vacancies/models/vacancy.model';
 import { Videos_of_teachers } from './videos-of-teachers/models/videos-of-teacher.model';
-import { Videos_of_project } from './videos-of-projects/models/videos-of-project.model';
 import { Admins } from './admins/models/admin.model';
 import { Advertisements } from './advertisements/models/advertisement.models';
 import { FileModule } from './file/file.module';
@@ -39,6 +37,7 @@ import { MailModule } from './mail/mail.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { Videos_of_project } from './projects/models/videos-of-project.model';
 
 @Module({
   imports: [
@@ -68,9 +67,9 @@ import { JwtModule } from '@nestjs/jwt';
         Students_projects,
         Vacancies,
         Videos_of_teachers,
-        Videos_of_project,
         Admins,
         Advertisements,
+        Videos_of_project,
       ],
     }),
     ServeStaticModule.forRoot({
@@ -99,7 +98,6 @@ import { JwtModule } from '@nestjs/jwt';
     BooksModule,
     VacanciesModule,
     AdvertisementsModule,
-    VideosOfProjectsModule,
     FileModule,
     MailModule,
   ],
