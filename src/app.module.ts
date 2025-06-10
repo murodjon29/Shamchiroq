@@ -38,8 +38,6 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AdvertisementsService } from './advertisements/advertisements.service';
-
 import { Videos_of_project } from './projects/models/videos-of-project.model';
 
 
@@ -74,9 +72,8 @@ import { Videos_of_project } from './projects/models/videos-of-project.model';
         Admins,
         Advertisements,
         Vacancies,
-        Advertisements
-        Videos_of_project,
-
+        Advertisements,
+        Videos_of_project
       ],
     }),
     ServeStaticModule.forRoot({
