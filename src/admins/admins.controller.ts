@@ -24,12 +24,16 @@ import { Role } from 'src/enum/index';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { GetCookie } from 'src/decorators/cookie.decarator';
 import { SelfGuard } from 'src/guards/self.guard';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 
 @UseInterceptors(CacheInterceptor)
 @Controller('admins')
 export class AdminsController {
   constructor(private readonly adminService: AdminService) {}
 
+  @ApiCreatedResponse({description: 'Admin created successfully'})
+  @ApiBadRequestResponse({description: 'Bad request, validation failed'})
+  @ApiInternalServerErrorResponse({description: 'Internal server error'})
   @UseGuards(AuthGuard, RolesGuard)
   @CheckRoles(Role.SUPERADMIN)
   @Post()
