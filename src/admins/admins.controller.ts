@@ -96,6 +96,6 @@ export class AdminsController {
   @CheckRoles(Role.SUPERADMIN)
   @Delete(':id')
   async deleteAdmin(@Param('id', ParseIntPipe) id: number) {
-    return this.adminService.deleteAdmin(id);
+    return this.adminService.deleteAdmin(id)
   }
 }
